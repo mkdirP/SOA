@@ -3,27 +3,26 @@ import { Form, Input, Button, notification, Table } from 'antd';
 import { getWorkerById } from '../api/API';
 import { XMLParser } from 'fast-xml-parser';
 
-const GetWorker = () => {
+const GetWorkerById = () => {
     const [workerData, setWorkerData] = useState(null);
     const [loading, setLoading] = useState(false);
 
-    const onFinish = async (values) => {
+
+
+    const fetchWorkerById = async (values) => {
         const { id } = values;
-        if (id <= 0) {
-            notification.error({ message: 'ID must be greater than 0' });
-            return;
-        }
 
         setLoading(true);
         try {
             const response = await getWorkerById(id);
 
             // 解析 XML 数据
-            const parser = new XMLParser();
-            const jsonData = parser.parse(response);
+            // const parser = new XMLParser();
+            // const jsonData = parser.parse(response);
+            console.log(response); // 这里将是XML字符串或XML文档对象
 
             // 将解析后的数据存储到状态
-            setWorkerData(jsonData.Worker);
+            setWorkerData(response);
         } catch (error) {
             notification.error({ message: 'Failed to fetch worker data' });
         } finally {
@@ -57,7 +56,7 @@ const GetWorker = () => {
     return (
         <div>
             <h2>Get Worker By ID</h2>
-            <Form layout="vertical" onFinish={onFinish}>
+            <Form layout="vertical" onFinish={fetchWorkerById}>
                 <Form.Item
                     label="Worker ID"
                     name="id"
@@ -97,4 +96,4 @@ const GetWorker = () => {
     );
 };
 
-export default GetWorker;
+export default GetWorkerById;

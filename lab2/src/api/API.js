@@ -1,10 +1,23 @@
 import axios from 'axios';
+// import * as fs from "fs";
+// import * as https from "https";
 
-const API_BASE_URL = 'http://localhost:18080/api/v1'; // 后端 API 地址
+const API_BASE_URL = 'https://127.0.0.1:18443/api/v1'; // 后端 API 地址
 
-export const fetchWorkers = async (params) => {
+// const fs = require('fs');
+// const https = require('https');
+//
+// const agent = new https.Agent({
+//     ca: fs.readFileSync('../selfsigned.crt'),
+// });
+
+export const fetchWorkers = async (filter, sort) => {
     try {
-        const response = await axios.get(`${API_BASE_URL}/workers`, { params });
+        const params = {
+            filter: { ...filter },
+            // sort: sort.join(',')
+        };
+        const response = await axios.get(`${API_BASE_URL}/workers`, { params });//, { params }
         return response.data;
     } catch (error) {
         console.error('Error fetching workers:', error);
@@ -24,10 +37,23 @@ export const addWorker = async (workerData) => {
 
 export const getWorkerById = async (id) => {
     try {
-        const response = await axios.get(`${API_BASE_URL}/workers/${id}`);
+        const response = await axios.get(`${API_BASE_URL}/workers/${id}` ,{
+            // httpsAgent: agent,
+            headers: {
+                'X-Client-Cert': '-----BEGIN CERTIFICATE-----\n\n-----END CERTIFICATE', // 指定接受XML格式的响应
+
+            },
+            responseType: "document", // 确保将响应类型设置为XML文档
+        });
         return response.data;
     } catch (error) {
         console.error('Error fetching worker by ID:', error);
+        if (error.response) {
+            console.error('Response data:', error.response.data);
+            console.error('Response status:', error.response.status);
+        } else {
+            console.error('Error message:', error.message);
+        }
         throw error;
     }
 };
@@ -52,9 +78,13 @@ export const deleteWorker = async (id) => {
     }
 };
 
-export const filterWorkersBySalary = async (salary) => {
+export const filterWorkersBySalary = async (salary, filter) => {
     try {
-        const response = await axios.get(`${API_BASE_URL}/workers/low-salary/${salary}`);
+        const params = {
+            filter: { ...filter },
+            sort: ['id'] // Default sort
+        };
+        const response = await axios.get(`${API_BASE_URL}/workers/low-salary/${salary}`, { params });
         return response.data;
     } catch (error) {
         console.error('Error filtering workers by salary:', error);
@@ -62,9 +92,13 @@ export const filterWorkersBySalary = async (salary) => {
     }
 };
 
-export const groupWorkersByName = async () => {
+export const groupWorkersByName = async (filter) => {
     try {
-        const response = await axios.get(`${API_BASE_URL}/workers/group-by-name`);
+        const params = {
+            filter: { ...filter },
+            sort: ['-name'] // Default sort
+        };
+        const response = await axios.get(`${API_BASE_URL}/workers/group-by-name`, { params });
         return response.data;
     } catch (error) {
         console.error('Error grouping workers by name:', error);

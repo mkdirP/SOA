@@ -73,7 +73,6 @@ const WorkerForm = ({ onFinish, loading, isUpdate }) => {
                 label="Salary"
                 name="salary"
                 rules={[{ required: true, message: 'Please input the salary' },
-                    { type: 'number', min: 1, message: 'Salary must be greater than 0' },
                     {
                         validator(_, value) {
                             if (!value || (Number.isInteger(Number(value)) && Number(value) > 0)) {
@@ -98,7 +97,7 @@ const WorkerForm = ({ onFinish, loading, isUpdate }) => {
             <Form.Item
                 label="End Date"
                 name="endDate"
-                rules={[{ message: 'Please input the end date' }]}
+                rules={[{ required:false }]}
             >
                 <DatePicker showTime format="YYYY-MM-DDTHH:mm:ss[Z]" />
             </Form.Item>
