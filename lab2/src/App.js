@@ -1,13 +1,14 @@
 import React from 'react';
 import { Layout, Menu } from 'antd';
-import AddWorker from './components/AddWorker';
-import GetWorker from './components/GetWorkerById';
-import UpdateWorkerById from './components/UpdateWorkerById';
-import FilterWorkerBySalary from './components/FilterWorkerBySalary';
-import GroupWorkersByName from './components/GroupWorkersByName';
-import AverageSalary from './components/AvgSalary';
-import DeleteWorkerById from "./components/DeleteWorkerById";
-import WorkersList from "./components/WorkersList";
+import AddWorker from './b1/components/AddWorker';
+import GetWorker from './b1/components/GetWorkerById';
+import UpdateWorkerById from './b1/components/UpdateWorkerById';
+import FilterWorkerBySalary from './b1/components/FilterWorkerBySalary';
+import GroupWorkersByName from './b1/components/GroupWorkersByName';
+import AverageSalary from './b1/components/AvgSalary';
+import DeleteWorkerById from "./b1/components/DeleteWorkerById";
+import WorkersList from "./b1/components/WorkersList";
+import FireEmployee from "./b2/components/FireEmployee";
 
 const { Header, Content, Sider } = Layout;
 
@@ -32,6 +33,8 @@ const App = () => {
                 return <AverageSalary />;
             case '8':
                 return <DeleteWorkerById />;
+            case '9':
+                return <FireEmployee />;
             default:
                 return null;
         }
@@ -50,6 +53,7 @@ const App = () => {
                     <Menu.Item key="6">Group by Name</Menu.Item>
                     <Menu.Item key="7">Average Salary</Menu.Item>
                     <Menu.Item key="8">Delete Worker by ID</Menu.Item>
+                    <Menu.Item key="9">Fire Employee</Menu.Item>
                 </Menu>
             </Header>
             <Layout>
