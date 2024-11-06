@@ -71,7 +71,7 @@ const WorkersTable = ({ dataSource, loading }) => {
                 <Table.Column title="End Date" dataIndex="endDate" sorter={{ compare: (a, b) => new Date(a.endDate) - new Date(b.endDate), multiple: 8 }} />
                 <Table.Column title="Status" dataIndex="status" sorter={{ compare: (a, b) => a.status.localeCompare(b.status), multiple: 9 }}  />
                 <Table.Column title="Weight" dataIndex={['person', 'weight']} sorter={{ compare: (a, b) => a.person.weight - b.person.weight, multiple: 10 }}  />
-                <Table.Column title="Passport ID" dataIndex={['person', 'passportID']} sorter={{ compare: (a, b) => a.person.passportID.localeCompare(b.person.passportID), multiple: 11 }}/>
+                <Table.Column title="Passport ID" dataIndex={['person', 'passportId']} sorter={{ compare: (a, b) => a.person.passportId - b.person.passportId, multiple: 11 }}/>
                 <Table.Column title="Eye Color" dataIndex={['person', 'eyeColor']} sorter={{ compare: (a, b) => a.person.eyeColor.localeCompare(b.person.eyeColor), multiple: 12 }} />
                 <Table.Column title="Hair Color" fixed={"right"} dataIndex={['person', 'hairColor']} sorter={{ compare: (a, b) => a.person.hairColor.localeCompare(b.person.hairColor), multiple: 13 }}  />
             </Table>

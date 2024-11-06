@@ -9,8 +9,10 @@ import AverageSalary from './b1/components/AvgSalary';
 import DeleteWorkerById from "./b1/components/DeleteWorkerById";
 import WorkersList from "./b1/components/WorkersList";
 import FireEmployee from "./b2/components/FireEmployee";
+import MoveEmployee from "./b2/components/MoveEmployee";
 
 const { Header, Content, Sider } = Layout;
+const { SubMenu } = Menu;
 
 const App = () => {
     const [selectedKey, setSelectedKey] = React.useState('1');
@@ -35,6 +37,8 @@ const App = () => {
                 return <DeleteWorkerById />;
             case '9':
                 return <FireEmployee />;
+            case '10':
+                return <MoveEmployee />
             default:
                 return null;
         }
@@ -44,20 +48,25 @@ const App = () => {
         <Layout>
             <Header className="header">
                 <div className="logo" />
-                <Menu theme={"dark"} mode="horizontal" defaultSelectedKeys={['1']} onSelect={({ key }) => setSelectedKey(key)}>
-                    <Menu.Item key="1">Workers List</Menu.Item>
-                    <Menu.Item key="2">Add Worker</Menu.Item>
-                    <Menu.Item key="3">Get Worker by ID</Menu.Item>
-                    <Menu.Item key="4">Update Worker by ID</Menu.Item>
-                    <Menu.Item key="5">Filter by Salary</Menu.Item>
-                    <Menu.Item key="6">Group by Name</Menu.Item>
-                    <Menu.Item key="7">Average Salary</Menu.Item>
-                    <Menu.Item key="8">Delete Worker by ID</Menu.Item>
-                    <Menu.Item key="9">Fire Employee</Menu.Item>
+                <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['1']} onSelect={({ key }) => setSelectedKey(key)}>
+                    <SubMenu key="sub1" title="WORKER">
+                        <Menu.Item key="1">Workers List</Menu.Item>
+                        <Menu.Item key="2">Add Worker</Menu.Item>
+                        <Menu.Item key="3">Get Worker by ID</Menu.Item>
+                        <Menu.Item key="4">Update Worker by ID</Menu.Item>
+                        <Menu.Item key="5">Filter by Salary</Menu.Item>
+                        <Menu.Item key="6">Group by Name</Menu.Item>
+                        <Menu.Item key="7">Average Salary</Menu.Item>
+                        <Menu.Item key="8">Delete Worker by ID</Menu.Item>
+                    </SubMenu>
+                    <SubMenu key="sub2" title="HR">
+                        <Menu.Item key="9">Fire Employee</Menu.Item>
+                        <Menu.Item key="10">Move Employee</Menu.Item>
+                    </SubMenu>
                 </Menu>
             </Header>
             <Layout>
-                <Sider width={50}  className="site-layout-background" />
+                <Sider width={50} className="site-layout-background" />
                 <Layout style={{ padding: '0 24px 24px' }}>
                     <Content
                         className="site-layout-background"

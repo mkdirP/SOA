@@ -1,22 +1,18 @@
 import React, { useState } from 'react';
-import { Form, Input, Button, notification, Table } from 'antd';
+import {Form, Input, Button, notification, Table, message} from 'antd';
 import { fireEmployeeById } from '../api/API-b2';
-import WorkerTable from "../../b1/form/WorkerTable";
 
 const FireEmployeeById = () => {
-    const [workerData, setWorkerData] = useState(null);
     const [loading, setLoading] = useState(false);
 
     const fireEmployee = async (values) => {
         const { id } = values;
         setLoading(true);
         try {
-            const response = await fireEmployeeById(id);
-
-            console.log(response);
-            setWorkerData(response);
+            await fireEmployeeById(id);
+            message.success('Worker has been successfully fired');
         } catch (error) {
-            notification.error({ message: 'Failed to fetch worker data' });
+            notification.error({ message: 'Failed to fire worker' });
         } finally {
             setLoading(false);
         }
@@ -24,7 +20,7 @@ const FireEmployeeById = () => {
 
     return (
         <div>
-            <h2>Get Worker By ID</h2>
+            <h2>Fire Employee By ID</h2>
             <Form layout="vertical" onFinish={fireEmployee}>
                 <Form.Item
                     label="Worker ID"
@@ -51,13 +47,6 @@ const FireEmployeeById = () => {
                     </Button>
                 </Form.Item>
             </Form>
-
-            {workerData && (
-                <WorkerTable
-                    dataSource={workerData}
-                    rowKey="field"
-                />
-            )}
         </div>
     );
 };
