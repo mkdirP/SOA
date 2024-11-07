@@ -9,7 +9,7 @@ export const parseXML = (xmlString) => {
     const workers = Array.from(xmlDoc.getElementsByTagName("Worker")); // 获取所有 Worker 元素
 
     return workers.map(worker => ({
-        id: worker.getElementsByTagName("id")[0].textContent,
+        id: worker.getElementsByTagName("id")[1].textContent,
         name: worker.getElementsByTagName("name")[0].textContent,
         creationDate: worker.getElementsByTagName("creationDate")[0].textContent,
         salary: worker.getElementsByTagName("salary")[0].textContent,
@@ -25,7 +25,6 @@ export const parseXML = (xmlString) => {
             weight: worker.getElementsByTagName("weight")[0].textContent,
         },
         coordinate: {
-            id: worker.getElementsByTagName("id")[0].textContent,
             x: worker.getElementsByTagName("x")[0].textContent,
             y: worker.getElementsByTagName("y")[0].textContent,
         },
@@ -44,12 +43,22 @@ export const parseXMLGroup = (xmlString) => {
 };
 
 // no-sort-filter
-export const fetchWorkers = async (filter, sort) => {
+export const fetchWorkers = async (sorterString='', urlParams) => {
     try {
-        const params = {
-            filter: { ...filter },
-            // sort: sort.join(',')
-        };
+        const params = {};
+        if (sorterString && typeof sorterString === 'string'){
+            params.sort = sorterString.replace(/%2C/g, ',');
+        }
+
+        // 处理过滤参数（urlParams）
+        if (urlParams) {
+            // 使用 URLSearchParams 将查询字符串解析为键值对
+            const urlParamsObj = new URLSearchParams(urlParams);
+            for (const [key, value] of urlParamsObj.entries()) {
+                params[key] = value;
+            }
+        }
+
         const response = await axios.get(`${API_BASE_URL}/workers`,{
             params,
                 headers: {
@@ -158,12 +167,22 @@ export const deleteWorker = async (id) => {
 };
 
 // no-sort-filter
-export const filterWorkersBySalary = async (salary) => {
+export const filterWorkersBySalary = async (salary, sorterString='', urlParams) => {
     try {
-        const params = {
-            // filter: { ...filter },
-            // sort: ['id'] // Default sort
-        };
+        const params = {};
+        if (sorterString && typeof sorterString === 'string'){
+            params.sort = sorterString.replace(/%2C/g, ',');
+        }
+
+        // 处理过滤参数（urlParams）
+        if (urlParams) {
+            // 使用 URLSearchParams 将查询字符串解析为键值对
+            const urlParamsObj = new URLSearchParams(urlParams);
+            for (const [key, value] of urlParamsObj.entries()) {
+                params[key] = value;
+            }
+        }
+
         const response = await axios.get(`${API_BASE_URL}/workers/low-salary/${salary}`, {
             params,
             headers: {

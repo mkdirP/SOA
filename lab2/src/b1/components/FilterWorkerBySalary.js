@@ -1,30 +1,30 @@
-import React, { useState } from 'react';
-import {Form, Input, Button, Table, notification, Space} from 'antd';
-import {filterWorkersBySalary} from '../api/API-b1';
+import React, { useEffect, useState } from 'react';
+import { Form, Input, Button, notification } from 'antd';
+import { filterWorkersBySalary } from '../api/API-b1';
 import WorkersTable from '../form/WorkersTable';
-import {filterAndSortData, renderFilterDropdown, useSortAndFilter} from "../util/sort-filter";
 
 const FilterWorkerBySalary = () => {
     const [workers, setWorkers] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [pagination, setPagination] = useState({ current: 1, pageSize: 10 });
-    const [sorter, setSorter] = useState({});
     const [showTable, setShowTable] = useState(false);
+    const [sorters, setSorters] = useState('');
+    const [filters, setFilters] = useState('');
+    const [salary, setSalary] = useState(null); // 保持 salary 状态
 
-    // const [filters, setFilters] = useState({});
-    // const [inputValues, setInputValues] = useState({}); // 新增状态，用于存储输入框值
-    // const [salaryFilter, setSalaryFilter] = useState('');
+    useEffect(() => {
+        // 每次 sorters 或 filters 更新时重新触发搜索
+        if (sorters || filters || salary !== null) {
+            fetchWorkersBySalary(salary, sorters, filters); // 确保传递当前的 salary
+        }
+    }, [sorters, filters, salary]); // 将 salary 加入依赖
 
-
-    const fetchWorkersBySalary = async (values) => {
-        const { salary } = values;
-
+    const fetchWorkersBySalary = async (salaryValue, sorterString = sorters, urlParams = filters) => {
         setLoading(true);
+        setSorters(sorterString);
+        setFilters(urlParams);
+
         try {
-            const filter = {}; // 根据需要定义过滤条件
-            const sort = []; // 根据需要定义排序条件
-            const workers = await filterWorkersBySalary(salary);
-            console.log(workers); // 这里将是XML字符串或XML文档对象
+            const workers = await filterWorkersBySalary(salaryValue, sorterString, urlParams);
             setWorkers(workers);
             setShowTable(true); // 显示表格
         } catch (error) {
@@ -34,115 +34,16 @@ const FilterWorkerBySalary = () => {
         }
     };
 
-    // 解构赋值语法，它从 useSortAndFilter 返回的对象中提取了以下属性和方法
-    const { filters, inputValues, handleFilterChange, handleInputChange, handleDeleteFilter } = useSortAndFilter();
-    const paginatedData = filterAndSortData(workers, filters, sorter, pagination);
-
-
-    // 处理过滤条件的更新
-    // const handleFilterChange = (field, condition, value) => {
-    //     setFilters((prevFilters) => ({
-    //         ...prevFilters,
-    //         [field]: {
-    //             condition,
-    //             value: !isNaN(Number(value)) ? Number(value) : value // 如果是有效数字，使用数字；否则使用原值
-    //         },
-    //     }));
-    // };
-    //
-    // // 更新输入框的值
-    // const handleInputChange = (field, value) => {
-    //     setInputValues((prevValues) => ({
-    //         ...prevValues,
-    //         [field]: value,
-    //     }));
-    // };
-    //
-    // // 删除过滤器和清空输入框
-    // const handleDeleteFilter = (field) => {
-    //     handleFilterChange(field, null, null); // 删除过滤器
-    //     handleInputChange(field, ''); // 清空输入框
-    // };
-    //
-    // // 数据过滤和排序
-    // const filteredAndSortedData = workers
-    //     .filter((worker) => {
-    //         return Object.keys(filters).every((field) => {
-    //             const { condition, value } = filters[field];
-    //             const fieldValue = field.includes('.')
-    //                 ? field.split('.').reduce((o, i) => o[i], worker)
-    //                 : worker[field];
-    //             switch (condition) {
-    //                 case 'eq': return fieldValue === value;
-    //                 case 'ne': return fieldValue !== value;
-    //                 case 'gt': return fieldValue > value;
-    //                 case 'lt': return fieldValue < value;
-    //                 case 'gte': return fieldValue >= value;
-    //                 case 'lte': return fieldValue <= value;
-    //                 default: return true;
-    //             }
-    //         });
-    //     })
-    //     .sort((a, b) => {
-    //         let result = 0;
-    //         if (sorter.field) {
-    //             const fieldValueA = sorter.field.includes('.')
-    //                 ? sorter.field.split('.').reduce((o, i) => o[i], a)
-    //                 : a[sorter.field];
-    //             const fieldValueB = sorter.field.includes('.')
-    //                 ? sorter.field.split('.').reduce((o, i) => o[i], b)
-    //                 : b[sorter.field];
-    //
-    //             if (sorter.order === 'ascend') {
-    //                 result = fieldValueA > fieldValueB ? 1 : -1;
-    //             } else if (sorter.order === 'descend') {
-    //                 result = fieldValueA < fieldValueB ? 1 : -1;
-    //             }
-    //         }
-    //         return result;
-    //     });
-
-    // const paginatedData = filteredAndSortedData.slice(
-    //     (pagination.current - 1) * pagination.pageSize,
-    //     pagination.current * pagination.pageSize
-    // );
-
-    // 渲染列的过滤器
-    // const renderFilterDropdown = (field) => (
-    //     <div style={{ padding: 8 }}>
-    //         <Input
-    //             placeholder={`${field} (eq|ne|gt|lt|gte|lte)=value`}
-    //             value={inputValues[field] || ''} // 绑定输入框值
-    //             onChange={(e) => {
-    //                 const value = e.target.value;
-    //                 handleInputChange(field, value); // 更新输入框值
-    //                 const [condition, filterValue] = value.split('=');
-    //                 handleFilterChange(field, condition, filterValue);
-    //             }}
-    //             // onChange={(e) => {
-    //             //     const [condition, value] = e.target.value.split('=');
-    //             //     handleFilterChange(field, condition, value);
-    //             // }}
-    //             style={{ marginBottom: 8, display: 'block' }}
-    //         />
-    //         <Button
-    //             type="danger"
-    //             onClick={() => {
-    //                 // handleFilterChange(field, null, null); // 删除过滤器
-    //                 handleDeleteFilter(field)
-    //             }}
-    //             size="small"
-    //             style={{ width: '100%' }}
-    //         >
-    //             Delete Filter
-    //         </Button>
-    //     </div>
-    // );
+    // !!!!!
+    const handleFormSubmit = (values) => {
+        setSalary(values.salary); // 提交表单时设置 salary
+        fetchWorkersBySalary(values.salary, sorters, filters); // 调用函数时传递 salary
+    };
 
     return (
         <div>
             <h2>Filter Worker By Salary</h2>
-            <Form layout="vertical" onFinish={fetchWorkersBySalary}>
+            <Form layout="vertical" onFinish={handleFormSubmit}>
                 <Form.Item
                     label="Salary less than"
                     name="salary"
@@ -171,14 +72,13 @@ const FilterWorkerBySalary = () => {
                 <WorkersTable
                     dataSource={workers}
                     loading={loading}
-                    pagination={pagination}
-                    setPagination={setPagination}
-                    setSorter={setSorter}
-                    renderFilterDropdown={renderFilterDropdown}
+                    onSorterChange={(sorterString) => fetchWorkersBySalary(salary, sorterString, filters)} 
+                    onFilterChange={(urlParams) => fetchWorkersBySalary(salary, sorters, urlParams)} // 保持当前 salary
+                    onFilterSubmit={(filterInput) => fetchWorkersBySalary(salary, sorters, filterInput)}
                 />
             )}
         </div>
     );
 };
-
+// onFilterSubmit {/*当用户更改排序条件时，通知父组件更新排序条件，并保持 salary 和 filters 状态不变。*/}
 export default FilterWorkerBySalary;

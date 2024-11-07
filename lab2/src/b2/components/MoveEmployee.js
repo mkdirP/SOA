@@ -24,7 +24,7 @@ const MoveEmployeeById = () => {
             <Form layout="vertical" onFinish={moveEmployee}>
                 <Form.Item
                     label="Worker ID"
-                    name="id"
+                    name="workerId"
                     rules={[
                         { required: true, message: 'Please input the worker ID' },
                         {
@@ -42,7 +42,7 @@ const MoveEmployeeById = () => {
                 </Form.Item>
                 <Form.Item
                     label="ID from organization .."
-                    name="id"
+                    name="idTo"
                     rules={[
                         { required: true, message: 'Please input the ID from ...' },
                         {
@@ -60,7 +60,7 @@ const MoveEmployeeById = () => {
                 </Form.Item>
                 <Form.Item
                     label="ID to organization .."
-                    name="id"
+                    name="idFrom"
                     rules={[
                         { required: true, message: 'Please input the ID to ...' },
                         {
