@@ -3,7 +3,7 @@ import {Button, Form} from 'antd';
 import { fetchWorkers } from "../api/API-b1";
 import WorkersTable from "../form/WorkersTable";
 
-const WorkersList = () => {
+const GetAllWorkers = () => {
 
     const [loading, setLoading] = useState(false);
     const [workers, setWorkers] = useState([]);
@@ -15,8 +15,8 @@ const WorkersList = () => {
         setLoading(true);
         setSorters(sorterString);
         setFilters(urlParams);
-        console.log("sorters: ",sorterString);
-        console.log("urlParams: ",urlParams);
+        // console.log("sorters: ",sorterString);
+        // console.log("urlParams: ",urlParams);
 
         try {
             const workers = await fetchWorkers(sorterString, urlParams); // 获取工人数据
@@ -56,4 +56,4 @@ const WorkersList = () => {
     );
 };
 
-export default WorkersList;
+export default GetAllWorkers;

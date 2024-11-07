@@ -2,7 +2,6 @@
 import React, {useState} from 'react';
 import {Table, Input, Space, Pagination, Button, notification} from 'antd';
 import { createStyles } from 'antd-style';
-import {red} from "@ant-design/colors";
 
 const useStyle = createStyles(({ css, token }) => {
     const { antCls } = token;
@@ -32,12 +31,13 @@ const WorkersTable = ({ dataSource, loading, onSorterChange, onFilterChange, onF
     const [filter, setFilter] = useState({}); // 用于存储过滤条件
     const [filterInput, setFilterInput] = useState(''); // 存储用户输入的过滤条件
     // 定义不需要加单引号的字段
-    const noQuoteFields = ['id', 'x', 'y', 'creationDate', 'endDate', 'organization', 'weight', 'salary'];
+    const noQuoteFields = ['id','x','y' ,'creationDate', 'endDate', 'organization', 'salary'];
 
-// 过滤条件输入框的变化
+    // 过滤条件输入框的变化
     const handleFilterChange = (e) => {
         setFilterInput(e.target.value); // 更新输入框的值
     };
+
     // 当点击"Apply Filter"按钮时
     const handleFilterSubmit = () => {
 
@@ -68,18 +68,25 @@ const WorkersTable = ({ dataSource, loading, onSorterChange, onFilterChange, onF
         const filterObj = {};
 
         conditions.forEach((condition) => {
-            const regex = /(\w+)\[(eq|ne|gt|lt|lte|gte)]=(.+)/;
+            const regex = /filter\[(\w+)]\s*=\s*(.+)/;
             const match = condition.match(regex);
 
             if (match) {
                 const field = match[1];
-                const operator = match[2];
-                const value = match[3];
-                if (!filterObj[field]) {
-                    filterObj[field] = {};
-                }
-                filterObj[field][operator] = value;
+                const value = match[2];
+                filterObj[field] = value;
             }
+            // const regex = /(\w+)\[(eq|ne|gt|lt|lte|gte)]=(.+)/;
+            // const match = condition.match(regex);
+            // if (match) {
+            //     const field = match[1];
+            //     const operator = match[2];
+            //     const value = match[3];
+            //     if (!filterObj[field]) {
+            //         filterObj[field] = {};
+            //     }
+            //     filterObj[field][operator] = value;
+            // }
         });
 
         return filterObj;
@@ -90,12 +97,15 @@ const WorkersTable = ({ dataSource, loading, onSorterChange, onFilterChange, onF
         const params = new URLSearchParams();
 
         Object.keys(filterObj).forEach(field => {
-            const conditions = filterObj[field];
-            Object.entries(conditions).forEach(([condition, value]) => {
-                // 根据字段名判断是否需要加单引号
-                const formattedValue = noQuoteFields.includes(field) ? value : `'${value}'`;
-                params.append(`filter[${field}]`, formattedValue);
-            });
+            const value = filterObj[field];
+            const formattedValue = noQuoteFields.includes(field) ? value : `'${value}'`;
+            params.append(`filter[${field}]`, formattedValue);
+            // const conditions = filterObj[field];
+            // Object.entries(conditions).forEach(([condition, value]) => {
+            //     // 根据字段名判断是否需要加单引号
+            //     const formattedValue = noQuoteFields.includes(field) ? value : `'${value}'`;
+            //     params.append(`filter[${field}]`, formattedValue);
+            // });
         });
 
         return params.toString();
@@ -105,20 +115,22 @@ const WorkersTable = ({ dataSource, loading, onSorterChange, onFilterChange, onF
     const startIndex = (pagination.current - 1) * pagination.pageSize;
     const filteredData = dataSource.filter(item => {
         return Object.keys(filter).every(field => {
-            const fieldConditions = filter[field];
-            const fieldValue = item[field];
-
-            return Object.entries(fieldConditions).every(([condition, value]) => {
-                switch (condition) {
-                    case 'eq': return fieldValue === value;
-                    case 'ne': return fieldValue !== value;
-                    case 'gt': return fieldValue < value;
-                    case 'lt': return fieldValue > value;
-                    case 'gte': return fieldValue <= value;
-                    case 'lte': return fieldValue >= value;
-                    default: return true;
-                }
-            });
+            const value = filter[field];
+            return item[field]?.toString() === value;
+            // const fieldConditions = filter[field];
+            // const fieldValue = item[field];
+            //
+            // return Object.entries(fieldConditions).every(([condition, value]) => {
+            //     switch (condition) {
+            //         case 'eq': return fieldValue === value;
+            //         case 'ne': return fieldValue !== value;
+            //         case 'gt': return fieldValue < value;
+            //         case 'lt': return fieldValue > value;
+            //         case 'gte': return fieldValue <= value;
+            //         case 'lte': return fieldValue >= value;
+            //         default: return true;
+            //     }
+            // });
         });
     });
 
@@ -147,11 +159,12 @@ const WorkersTable = ({ dataSource, loading, onSorterChange, onFilterChange, onF
 
     return (
         <div>
-            <Space style={{ marginBottom: 16 }}>
+            <Space style={{ marginBottom: 20 }}>
                 <Input
-                    placeholder="Filter (e.g. id[eq]=1)"
+                    placeholder="Filter (e.g. filter[id]=1)"
                     value={filterInput}
                     onChange={handleFilterChange}
+                    style={{ width: '300px' }}
                 />
                 <Input
                     placeholder="Page Size"
@@ -188,17 +201,17 @@ const WorkersTable = ({ dataSource, loading, onSorterChange, onFilterChange, onF
             >
                 <Table.Column title="ID" dataIndex="id" fixed={"left"} sorter={{ compare: (a, b) => a.id - b.id, multiple: 1 }} />
                 <Table.Column title="Name" dataIndex="name" fixed={"left"} sorter={{ compare: (a, b) => a.name.localeCompare(b.name), multiple: 2 }}/>
-                <Table.Column title="X" dataIndex={['coordinate', 'x']} sorter={{ compare: (a, b) => a.coordinate.x - b.coordinate.x, multiple: 3 }} />
-                <Table.Column title="Y" dataIndex={['coordinate', 'y']} sorter={{ compare: (a, b) => a.coordinate.y - b.coordinate.y, multiple: 4 }}  />
-                <Table.Column title="Creation Date" dataIndex="creationDate" sorter={{ compare: (a, b) => new Date(a.creationDate) - new Date(b.creationDate), multiple: 5 }}  />
-                <Table.Column title="Salary" dataIndex="salary" sorter={{ compare: (a, b) => a.salary - b.salary, multiple: 6 }}  />
-                <Table.Column title="Start Date" dataIndex="startDate" sorter={{ compare: (a, b) => new Date(a.startDate) - new Date(b.startDate), multiple: 7 }} />
-                <Table.Column title="End Date" dataIndex="endDate" sorter={{ compare: (a, b) => new Date(a.endDate) - new Date(b.endDate), multiple: 8 }} />
-                <Table.Column title="Status" dataIndex="status" sorter={{ compare: (a, b) => a.status.localeCompare(b.status), multiple: 9 }}  />
-                <Table.Column title="Weight" dataIndex={['person', 'weight']} sorter={{ compare: (a, b) => a.person.weight - b.person.weight, multiple: 10 }}  />
-                <Table.Column title="Passport ID" dataIndex={['person', 'passportId']} sorter={{ compare: (a, b) => a.person.passportId - b.person.passportId, multiple: 11 }}/>
-                <Table.Column title="Eye Color" dataIndex={['person', 'eyeColor']} sorter={{ compare: (a, b) => a.person.eyeColor.localeCompare(b.person.eyeColor), multiple: 12 }} />
-                <Table.Column title="Hair Color" fixed={"right"} dataIndex={['person', 'hairColor']} sorter={{ compare: (a, b) => a.person.hairColor.localeCompare(b.person.hairColor), multiple: 13 }}  />
+                <Table.Column title="X" dataIndex={['coordinate', 'x']}  />
+                <Table.Column title="Y" dataIndex={['coordinate', 'y']}  />
+                <Table.Column title="Creation Date" dataIndex="creationDate" sorter={{ compare: (a, b) => new Date(a.creationDate) - new Date(b.creationDate), multiple: 3 }}  />
+                <Table.Column title="Salary" dataIndex="salary" sorter={{ compare: (a, b) => a.salary - b.salary, multiple: 4 }}  />
+                <Table.Column title="Start Date" dataIndex="startDate" sorter={{ compare: (a, b) => new Date(a.startDate) - new Date(b.startDate), multiple: 5 }} />
+                <Table.Column title="End Date" dataIndex="endDate" sorter={{ compare: (a, b) => new Date(a.endDate) - new Date(b.endDate), multiple: 6 }} />
+                <Table.Column title="Status" dataIndex="status" sorter={{ compare: (a, b) => a.status.localeCompare(b.status), multiple: 7 }}  />
+                <Table.Column title="Weight" dataIndex={['person', 'weight']}   />
+                <Table.Column title="Passport ID" dataIndex={['person', 'passportId']} />
+                <Table.Column title="Eye Color" dataIndex={['person', 'eyeColor']} />
+                <Table.Column title="Hair Color" fixed={"right"} dataIndex={['person', 'hairColor']}  />
             </Table>
             <Pagination
                 current={pagination.current}

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:8081/b1-1.0/v1'; // 后端 API 地址
+const API_BASE_URL = 'https://localhost:18443/api/v1'; // 后端 API 地址
 
 export const parseXML = (xmlString) => {
     const parser = new DOMParser();
@@ -37,7 +37,7 @@ export const parseXMLGroup = (xmlString) => {
     const groupName  = Array.from(xmlDoc.getElementsByTagName("GroupName")); // 获取所有 Worker 元素
     return groupName.map(group => ({
         name: group.getElementsByTagName("name")[0].textContent,
-        count: parseInt(group.getElementsByTagName("count")[0].textContent, 10)
+        value: parseInt(group.getElementsByTagName("count")[0].textContent, 10)
     }));
 
 };
@@ -205,13 +205,29 @@ export const filterWorkersBySalary = async (salary, sorterString='', urlParams) 
     }
 };
 
-export const groupWorkersByName = async (filter) => {
+export const groupWorkersByName = async (sorterString='', urlParams) => {
     try {
-        const params = {
-            filter: { ...filter },
-            // sort: ['-name'] // Default sort
-        };
-        const response = await axios.get(`${API_BASE_URL}/workers/group-by-name`, { params });
+        const params = {};
+        if (sorterString && typeof sorterString === 'string'){
+            params.sort = sorterString.replace(/%2C/g, ',');
+        }
+        // console.log("sort", sorterString);
+        // 处理过滤参数（urlParams）
+        if (urlParams) {
+            // 使用 URLSearchParams 将查询字符串解析为键值对
+            const urlParamsObj = new URLSearchParams(urlParams);
+            for (const [key, value] of urlParamsObj.entries()) {
+                params[key] = value;
+            }
+            console.log("url", urlParams);
+        }
+        console.log("params", params)
+        const response = await axios.get(`${API_BASE_URL}/workers/group-by-name`, {
+            params,
+            headers: {
+                'Accept': 'application/xml', // 期望接收 XML 格式
+                'Content-Type': 'application/xml' // 请求内容类型为 XML
+            }});
         const workers = parseXMLGroup(response.data); // 解析 XML
         console.log('Parsed workers:', workers);
         return workers; // 返回数组

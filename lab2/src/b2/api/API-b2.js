@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE_URL = 'http://localhost:8081/b2_war_exploded/v1'; // 后端 API 地址
+const API_BASE_URL = 'https://localhost:8181/api/v1'; // 后端 API 地址
 
 export const fireEmployeeById = async (id) => {
     try {

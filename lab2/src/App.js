@@ -7,7 +7,7 @@ import FilterWorkerBySalary from './b1/components/FilterWorkerBySalary';
 import GroupWorkersByName from './b1/components/GroupWorkersByName';
 import AverageSalary from './b1/components/AvgSalary';
 import DeleteWorkerById from "./b1/components/DeleteWorkerById";
-import WorkersList from "./b1/components/WorkersList";
+import GetAllWorkers from "./b1/components/GetAllWorkers";
 import FireEmployee from "./b2/components/FireEmployee";
 import MoveEmployee from "./b2/components/MoveEmployee";
 
@@ -20,7 +20,7 @@ const App = () => {
     const renderContent = () => {
         switch (selectedKey) {
             case '1':
-                return <WorkersList />;
+                return <GetAllWorkers />;
             case '2':
                 return <AddWorker />;
             case '3':

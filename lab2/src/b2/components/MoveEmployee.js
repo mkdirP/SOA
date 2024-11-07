@@ -47,7 +47,7 @@ const MoveEmployeeById = () => {
                         { required: true, message: 'Please input the ID from ...' },
                         {
                             validator(_, value) {
-                                if (!value || (Number.isInteger(Number(value)) && Number(value) > 0)) {
+                                if (!value || (Number.isInteger(Number(value)) && Number(value) >= 0)) {
                                     return Promise.resolve();
                                 }
                                 return Promise.reject(new Error('ID must be a positive integer'));

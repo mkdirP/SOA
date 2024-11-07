@@ -72,7 +72,7 @@ const FilterWorkerBySalary = () => {
                 <WorkersTable
                     dataSource={workers}
                     loading={loading}
-                    onSorterChange={(sorterString) => fetchWorkersBySalary(salary, sorterString, filters)} 
+                    onSorterChange={(sorterString) => fetchWorkersBySalary(salary, sorterString, filters)}
                     onFilterChange={(urlParams) => fetchWorkersBySalary(salary, sorters, urlParams)} // 保持当前 salary
                     onFilterSubmit={(filterInput) => fetchWorkersBySalary(salary, sorters, filterInput)}
                 />
