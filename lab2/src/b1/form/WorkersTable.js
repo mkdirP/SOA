@@ -50,7 +50,7 @@ const WorkersTable = ({ dataSource, loading, onSorterChange, onFilterChange, onF
         setFilter(filterObj); // 更新状态
         const urlParams = generateQueryParams(filterObj); // 转换成 URL 参数
         onFilterChange(urlParams); // 调用父组件的回调
-        onFilterSubmit(filterInput);  // 将过滤条件提交给父组件
+        // onFilterSubmit(filterInput);  // 将过滤条件提交给父组件
     };
 
     // 当点击"Clear Filter"按钮时
