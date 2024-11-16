@@ -15,7 +15,7 @@ export const fireEmployeeById = async (id) => {
 
 export const moveEmployeeById = async (workerId, idFrom, idTo) => {
     try {
-        const response = await axios.get(`${API_BASE_URL}/hrs/move/{workerId}/{idFrom}/{idTo}` );
+        const response = await axios.get(`${API_BASE_URL}/hrs/move/${workerId}/${idFrom}/${idTo}` );
         return response.data; // 返回数组
 
     } catch (error) {
