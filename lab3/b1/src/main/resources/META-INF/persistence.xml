@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="3.0" xmlns="https://jakarta.ee/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd">
+  <!-- Define Persistence Unit -->
+  <persistence-unit name="tad">
+    <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+    <!-- <jta-data-source>java:/PostgresDS</jta-data-source> -->
+    <class>com.tad.b1.entity.Coordinate</class>
+    <class>com.tad.b1.entity.Person</class>
+    <class>com.tad.b1.entity.Worker</class>
+    <properties>
+      <property name="hibernate.show_sql" value="true"/>
+      <property name="hibernate.format_sql" value="true"/>
+      <property name="hibernate.hbm2ddl.auto" value="update"/>
+      <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/coa2"/>
+      <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
+      <property name="hibernate.generate_statistics" value="true"/>
+      <property name="javax.persistence.jdbc.user" value="postgres"/>
+      <property name="javax.persistence.jdbc.password" value="s336262"/>
+    </properties>
+  </persistence-unit>
+</persistence>

@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: client-service
+  main:
+    allow-bean-definition-overriding: true
+
+
+server:
+  port: 8900
+
+client-service:
+  ribbon:
+    eureka:
+      enabled: false
+    listOfServers: localhost:8083,localhost:8084,localhost:8085
+    NIWSServerListClassName: com.netflix.loadbalancer.ConfigurationBasedServerList
+    PingUrl: /actuator/health
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    preferIpAddress: true
+    ip-address: 127.0.0.1
+
+logging:
+  level:
+    com.netflix.com.netflix.loadbalancer: DEBUG

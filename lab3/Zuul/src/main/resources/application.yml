@@ -1,0 +1,42 @@
+zuul:
+  routes:
+    client:
+      path: /client/**
+      serviceId: CLIENT-SERVICE
+    haproxy:
+      path: /node1/**
+      serviceId: HAPROXY
+#    add-proxy-headers: true
+
+
+server:
+  port: 8090
+
+spring:
+  application:
+    name: ZUUL
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    preferIpAddress: true
+    ip-address: 127.0.0.1
+
+logging:
+  level:
+    org.springframework.cloud.netflix.zuul: DEBUG
+    org.springframework.web: DEBUG
+    com.netflix.discovery: DEBUG
+    com.netflix.zuul.ZuulFilter: TRACE
+    com.netflix.zuul.context: TRACE
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'

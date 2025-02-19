@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: CLIENT
+  profiles:
+    active: development
+  config:
+    import: optional:configserver:http://tad:tad@localhost:8888
+server:
+  port: 8084
+
+
+logging:
+#  # 控制台日志输出的格式
+#  pattern:
+#    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+  # 设置日志级别
+  level:
+    root: INFO # 根日志级别为 INFO
+    org.springframework.web: DEBUG # 设置 Spring Web 包的日志级别为 DEBUG
+    com.tad: DEBUG # 设置 com.tad 包的日志级别为 DEBUG
+  # 将日志输出到文件
+  file:
+    name: logs/application.log
+  # 控制台输出日志
+  console:
+    enabled: true
+
